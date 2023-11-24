@@ -15,6 +15,8 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+
+	FireSocketName = "FirePoint";
 }
 
 
@@ -34,6 +36,7 @@ void UTP_WeaponComponent::Fire()
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+			const FVector FirePointLocation = GetSocketLocation(FireSocketName);
 			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
 	
 			//Set Spawn Collision Handling Override
@@ -41,7 +44,7 @@ void UTP_WeaponComponent::Fire()
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<ASantasToyWarfareProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			World->SpawnActor<ASantasToyWarfareProjectile>(ProjectileClass, FirePointLocation, SpawnRotation, ActorSpawnParams);
 		}
 	}
 	

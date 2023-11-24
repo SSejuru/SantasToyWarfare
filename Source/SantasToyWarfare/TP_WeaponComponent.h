@@ -50,6 +50,10 @@ public:
 	void Fire();
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
+	FName FireSocketName;
+
 	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

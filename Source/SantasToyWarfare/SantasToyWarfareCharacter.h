@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "SantasToyWarfareCharacter.generated.h"
 
+class ASTWWeaponBase;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -20,6 +21,8 @@ UCLASS(config=Game)
 class ASantasToyWarfareCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -53,6 +56,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Sprint Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SprintAction;
+
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -66,11 +73,24 @@ public:
 	bool GetHasRifle();
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	TSubclassOf<ASTWWeaponBase> WeaponClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (ClampMin = 1, ClampMax = 2))
+	float RunningSpeedMultiplier;
+
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	// Called when sprint input starts
+	void SprintStart();
+
+	// Called when sprint input is completed
+	void SprintStop();
 
 protected:
 	// APawn interface
@@ -83,5 +103,12 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+private:
+
+	float WalkingSpeed;
+	float RunningSpeed;
+
 };
+
+
 

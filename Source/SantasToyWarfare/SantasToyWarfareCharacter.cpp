@@ -9,7 +9,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "STWWeaponBase.h"
 #include "Engine/LocalPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -39,6 +41,8 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	RunningSpeedMultiplier = 1.5f;
+
 }
 
 void ASantasToyWarfareCharacter::BeginPlay()
@@ -55,9 +59,24 @@ void ASantasToyWarfareCharacter::BeginPlay()
 		}
 	}
 
+	WalkingSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	RunningSpeed = WalkingSpeed * RunningSpeedMultiplier;
+
+	//Spawn Weapon
+	if(WeaponClass)
+	{
+		FTransform SpawnTM;
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Owner = this;
+
+		ASTWWeaponBase* Weapon = GetWorld()->SpawnActor<ASTWWeaponBase>(WeaponClass, SpawnTM, SpawnParameters);
+	}
+	
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
+
 
 void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -73,6 +92,10 @@ void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* Play
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASantasToyWarfareCharacter::Look);
+
+		//Sprinting
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASantasToyWarfareCharacter::SprintStart);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASantasToyWarfareCharacter::SprintStop);
 	}
 	else
 	{
@@ -105,6 +128,17 @@ void ASantasToyWarfareCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ASantasToyWarfareCharacter::SprintStart()
+{
+	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+}
+
+
+void ASantasToyWarfareCharacter::SprintStop()
+{
+	GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
 }
 
 void ASantasToyWarfareCharacter::SetHasRifle(bool bNewHasRifle)
