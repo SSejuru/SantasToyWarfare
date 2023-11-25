@@ -45,11 +45,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void AttachWeapon(ASantasToyWarfareCharacter* TargetCharacter);
 
-	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UFUNCTION()
+	void OnFireInput();
+
 protected:
+
+	/** Make the weapon Fire a Projectile */
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Weapon")
+	void ServerFire();
 
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
 	FName FireSocketName;

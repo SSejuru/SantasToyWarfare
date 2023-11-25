@@ -51,6 +51,8 @@ protected:
 	virtual void BeginPlay();
 
 public:
+
+	
 		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -73,6 +75,9 @@ public:
 	bool GetHasRifle();
 
 protected:
+
+	UFUNCTION()
+	void SpawnWeapon();
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	TSubclassOf<ASTWWeaponBase> WeaponClass;

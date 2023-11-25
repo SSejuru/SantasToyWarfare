@@ -17,6 +17,8 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 
 	FireSocketName = "FirePoint";
+
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -28,7 +30,7 @@ void UTP_WeaponComponent::Fire()
 	}
 
 	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+	if (ProjectileClass != nullptr && GetOwner()->GetOwner()->HasAuthority())
 	{
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
@@ -36,8 +38,9 @@ void UTP_WeaponComponent::Fire()
 			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+
 			const FVector FirePointLocation = GetSocketLocation(FireSocketName);
-			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+			//const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
 	
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
@@ -65,6 +68,23 @@ void UTP_WeaponComponent::Fire()
 		}
 	}
 }
+
+void UTP_WeaponComponent::OnFireInput()
+{
+	if(!GetOwner()->GetOwner()->HasAuthority())
+	{
+		ServerFire();
+	}
+
+	Fire();
+}
+
+void UTP_WeaponComponent::ServerFire_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Called Server Fire"));
+	Fire();
+}
+
 
 void UTP_WeaponComponent::AttachWeapon(ASantasToyWarfareCharacter* TargetCharacter)
 {
@@ -95,7 +115,7 @@ void UTP_WeaponComponent::AttachWeapon(ASantasToyWarfareCharacter* TargetCharact
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::OnFireInput);
 		}
 	}
 }

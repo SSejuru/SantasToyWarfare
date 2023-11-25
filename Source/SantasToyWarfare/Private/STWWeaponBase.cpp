@@ -18,6 +18,7 @@ ASTWWeaponBase::ASTWWeaponBase()
 	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComp");
 	MeshComponent->SetupAttachment(WeaponComponent);
 
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned

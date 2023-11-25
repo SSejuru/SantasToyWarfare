@@ -42,7 +42,7 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	RunningSpeedMultiplier = 1.5f;
-
+	SetReplicates(true);
 }
 
 void ASantasToyWarfareCharacter::BeginPlay()
@@ -62,16 +62,8 @@ void ASantasToyWarfareCharacter::BeginPlay()
 	WalkingSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	RunningSpeed = WalkingSpeed * RunningSpeedMultiplier;
 
-	//Spawn Weapon
-	if(WeaponClass)
-	{
-		FTransform SpawnTM;
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParameters.Owner = this;
-
-		ASTWWeaponBase* Weapon = GetWorld()->SpawnActor<ASTWWeaponBase>(WeaponClass, SpawnTM, SpawnParameters);
-	}
+	if(HasAuthority())
+		SpawnWeapon();
 	
 }
 
@@ -150,3 +142,20 @@ bool ASantasToyWarfareCharacter::GetHasRifle()
 {
 	return bHasRifle;
 }
+
+void ASantasToyWarfareCharacter::SpawnWeapon()
+{
+	//Spawn Weapon
+	if (WeaponClass)
+	{
+		FTransform SpawnTM;
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Owner = this;
+
+		ASTWWeaponBase* Weapon = GetWorld()->SpawnActor<ASTWWeaponBase>(WeaponClass, SpawnTM, SpawnParameters);
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, FString::Printf(TEXT("Spawning: %s, By: %s"), *GetNameSafe(Weapon), *GetNameSafe(this)));
+	}
+}
+
+
