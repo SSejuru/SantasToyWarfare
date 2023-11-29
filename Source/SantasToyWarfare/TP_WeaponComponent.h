@@ -66,5 +66,6 @@ protected:
 
 private:
 	/** The Character holding this weapon*/
-	ASantasToyWarfareCharacter* Character;
+	UPROPERTY()
+	ASantasToyWarfareCharacter* OwnerCharacter;
 };

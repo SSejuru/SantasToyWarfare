@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "STWWeaponBase.generated.h"
 
+class ASantasToyWarfareCharacter;
 class UTP_WeaponComponent;
 
 UCLASS()
@@ -32,4 +33,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void AttachWeapon(ASantasToyWarfareCharacter* TargetCharacter);
 };

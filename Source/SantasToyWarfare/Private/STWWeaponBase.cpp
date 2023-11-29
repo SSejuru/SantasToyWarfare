@@ -25,13 +25,7 @@ ASTWWeaponBase::ASTWWeaponBase()
 void ASTWWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ASantasToyWarfareCharacter* Character = Cast<ASantasToyWarfareCharacter>(GetOwner());
-
-	if(Character)
-	{
-		WeaponComponent->AttachWeapon(Character);
-	}
+	AttachWeapon(Cast<ASantasToyWarfareCharacter>(GetOwner()));
 }
 
 // Called every frame
@@ -39,5 +33,16 @@ void ASTWWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASTWWeaponBase::AttachWeapon(ASantasToyWarfareCharacter* TargetCharacter)
+{
+	if (TargetCharacter)
+	{
+		WeaponComponent->AttachWeapon(TargetCharacter);
+
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+		MeshComponent->AttachToComponent(TargetCharacter->GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
+	}
 }
 

@@ -154,6 +154,7 @@ void ASantasToyWarfareCharacter::SpawnWeapon()
 		SpawnParameters.Owner = this;
 
 		ASTWWeaponBase* Weapon = GetWorld()->SpawnActor<ASTWWeaponBase>(WeaponClass, SpawnTM, SpawnParameters);
+
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, FString::Printf(TEXT("Spawning: %s, By: %s"), *GetNameSafe(Weapon), *GetNameSafe(this)));
 	}
 }
