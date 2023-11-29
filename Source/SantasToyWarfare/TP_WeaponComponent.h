@@ -54,8 +54,14 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category="Animation")
+	UAnimMontage* ShootingAnimation;
+
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Weapon")
 	void ServerFire();
+
+	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable, Category = "Animation")
+	void NetMulticastPlayShootingAnimation();
 
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
 	FName FireSocketName;

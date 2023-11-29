@@ -50,6 +50,12 @@ void UTP_WeaponComponent::Fire()
 			World->SpawnActor<ASantasToyWarfareProjectile>(ProjectileClass, FirePointLocation, SpawnRotation, ActorSpawnParams);
 		}
 	}
+
+	if(OwnerCharacter->HasAuthority())
+	{
+		NetMulticastPlayShootingAnimation();
+	}
+	
 	
 	// Try and play the sound if specified
 	if (FireSound != nullptr)
@@ -117,6 +123,14 @@ void UTP_WeaponComponent::AttachWeapon(ASantasToyWarfareCharacter* TargetCharact
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::OnFireInput);
 		}
+	}
+}
+
+void UTP_WeaponComponent::NetMulticastPlayShootingAnimation_Implementation()
+{
+	if (ensure(ShootingAnimation))
+	{
+		OwnerCharacter->PlayAnimMontage(ShootingAnimation);
 	}
 }
 
