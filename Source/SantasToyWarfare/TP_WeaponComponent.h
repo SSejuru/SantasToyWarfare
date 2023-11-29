@@ -45,6 +45,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void AttachWeapon(ASantasToyWarfareCharacter* TargetCharacter);
 
+	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
@@ -53,7 +54,6 @@ public:
 
 protected:
 
-	/** Make the weapon Fire a Projectile */
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Weapon")
 	void ServerFire();
 
