@@ -84,6 +84,7 @@ void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* Play
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASantasToyWarfareCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ASantasToyWarfareCharacter::StopMoving);
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASantasToyWarfareCharacter::Look);
@@ -110,6 +111,11 @@ void ASantasToyWarfareCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
+}
+
+void ASantasToyWarfareCharacter::StopMoving(const FInputActionValue& Value)
+{
+	SprintStop();
 }
 
 void ASantasToyWarfareCharacter::Look(const FInputActionValue& Value)

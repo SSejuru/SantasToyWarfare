@@ -47,6 +47,7 @@ void USTWAction_Shoot::StartAction_Implementation(AActor* Instigator)
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+			ActorSpawnParams.Instigator = Character;
 
 			// Spawn the projectile at the muzzle
 			World->SpawnActor<ASTWProjectileBase>(ProjectileClass, FirePointLocation, SpawnRotation, ActorSpawnParams);

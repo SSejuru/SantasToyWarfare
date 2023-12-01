@@ -101,6 +101,8 @@ protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
+	void StopMoving(const FInputActionValue& Value);
+
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 

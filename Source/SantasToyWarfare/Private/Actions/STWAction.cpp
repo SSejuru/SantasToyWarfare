@@ -16,7 +16,7 @@ void USTWAction::StartAction_Implementation(AActor* Instigator)
 {
 	USTWActionComponent* Comp = GetOwningComponent();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("Trying to start action %s"), *ActionTag.ToString()));
+	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("Trying to start action %s"), *ActionTag.ToString()));
 
 	Comp->ActiveGameplayTags.AppendTags(GrantsTag);
 

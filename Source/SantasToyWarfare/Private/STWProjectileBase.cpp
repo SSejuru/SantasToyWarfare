@@ -38,20 +38,26 @@ ASTWProjectileBase::ASTWProjectileBase()
 	bReplicates = true;
 }
 
-void ASTWProjectileBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
-	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
+
+void ASTWProjectileBase::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor && OtherActor != GetInstigator())
+	{
 		Destroy();
 	}
+}
+
+void ASTWProjectileBase::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	Destroy();
 }
 
 void ASTWProjectileBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	CollisionComp->OnComponentHit.AddDynamic(this, &ASTWProjectileBase::OnHit);		// set up a notification for when this component hits something blocking
+	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ASTWProjectileBase::OnComponentOverlap); // set up a notification for when this component hits something 
+	CollisionComp->OnComponentHit.AddDynamic(this, &ASTWProjectileBase::OnComponentHit);
 }
 
