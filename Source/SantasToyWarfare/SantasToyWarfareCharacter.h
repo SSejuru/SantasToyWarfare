@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "SantasToyWarfareCharacter.generated.h"
@@ -16,6 +17,8 @@ class UInputMappingContext;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+class USTWActionComponent;
 
 UCLASS(config=Game)
 class ASantasToyWarfareCharacter : public ACharacter
@@ -52,7 +55,6 @@ protected:
 
 public:
 
-	
 		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -82,8 +84,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	TSubclassOf<ASTWWeaponBase> WeaponClass;
 
+	ASTWWeaponBase* EquippedWeapon;
+
 	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (ClampMin = 1, ClampMax = 2))
 	float RunningSpeedMultiplier;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Components")
+	USTWActionComponent* ActionComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Actions")
+	FGameplayTag SprintTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Actions")
+	FGameplayTag InteractTag;
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -108,6 +121,9 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	USTWActionComponent* GetActionComponent() const { return ActionComp; }
+
+	ASTWWeaponBase* GetEquippedWeapon() const { return EquippedWeapon; }
 
 private:
 

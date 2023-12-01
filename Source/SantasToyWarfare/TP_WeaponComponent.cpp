@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "STWActionComponent.h"
+#include "Actions/STWAction.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -22,6 +24,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 }
 
 
+
 void UTP_WeaponComponent::Fire()
 {
 	if (OwnerCharacter == nullptr || OwnerCharacter->GetController() == nullptr)
@@ -29,66 +32,14 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
-	// Try and fire a projectile
-	if (ProjectileClass != nullptr && OwnerCharacter->HasAuthority())
-	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+	OwnerCharacter->GetActionComponent()->StartActionByTag(OwnerCharacter, FGameplayTag::RequestGameplayTag("Action.Shoot"));
 
-			const FVector FirePointLocation = GetSocketLocation(FireSocketName);
-			//const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-	
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	
-			// Spawn the projectile at the muzzle
-			World->SpawnActor<ASantasToyWarfareProjectile>(ProjectileClass, FirePointLocation, SpawnRotation, ActorSpawnParams);
-		}
-	}
-
-	if(OwnerCharacter->HasAuthority())
-	{
-		NetMulticastPlayShootingAnimation();
-	}
-	
-	
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, OwnerCharacter->GetActorLocation());
-	}
-	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = OwnerCharacter->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Fire, this, &UTP_WeaponComponent::StopFireAction, FireRate);
 }
 
-void UTP_WeaponComponent::OnFireInput()
+void UTP_WeaponComponent::StopFireAction()
 {
-	if(!OwnerCharacter->HasAuthority())
-	{
-		ServerFire();
-	}
-
-	Fire();
-}
-
-void UTP_WeaponComponent::ServerFire_Implementation()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, TEXT("Called Server Fire"));
-	Fire();
+	OwnerCharacter->GetActionComponent()->StopActionByTag(OwnerCharacter, FGameplayTag::RequestGameplayTag("Action.Shoot"));
 }
 
 
@@ -109,6 +60,9 @@ void UTP_WeaponComponent::AttachWeapon(ASantasToyWarfareCharacter* TargetCharact
 	// switch bHasRifle so the animation blueprint can switch to another animation set
 	OwnerCharacter->SetHasRifle(true);
 
+	//Add Shooting Action
+	OwnerCharacter->GetActionComponent()->AddAction(OwnerCharacter, ShootingAction);
+
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController()))
 	{
@@ -121,18 +75,12 @@ void UTP_WeaponComponent::AttachWeapon(ASantasToyWarfareCharacter* TargetCharact
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::OnFireInput);
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 		}
 	}
 }
 
-void UTP_WeaponComponent::NetMulticastPlayShootingAnimation_Implementation()
-{
-	if (ensure(ShootingAnimation))
-	{
-		OwnerCharacter->PlayAnimMontage(ShootingAnimation);
-	}
-}
+
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -149,3 +97,5 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		}
 	}
 }
+
+

@@ -35,4 +35,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void AttachWeapon(ASantasToyWarfareCharacter* TargetCharacter);
+
+	UTP_WeaponComponent* GetWeaponComponent() const { return WeaponComponent; }
 };

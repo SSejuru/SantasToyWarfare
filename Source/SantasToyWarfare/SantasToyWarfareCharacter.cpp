@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "STWActionComponent.h"
 #include "STWWeaponBase.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -40,6 +41,8 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	ActionComp = CreateDefaultSubobject<USTWActionComponent>("ActionComp");
 
 	RunningSpeedMultiplier = 1.5f;
 	SetReplicates(true);
@@ -124,13 +127,12 @@ void ASantasToyWarfareCharacter::Look(const FInputActionValue& Value)
 
 void ASantasToyWarfareCharacter::SprintStart()
 {
-	GetCharacterMovement()->MaxWalkSpeed = RunningSpeed;
+	ActionComp->StartActionByTag(this, SprintTag);
 }
-
 
 void ASantasToyWarfareCharacter::SprintStop()
 {
-	GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
+	ActionComp->StopActionByTag(this, SprintTag);
 }
 
 void ASantasToyWarfareCharacter::SetHasRifle(bool bNewHasRifle)
@@ -154,6 +156,7 @@ void ASantasToyWarfareCharacter::SpawnWeapon()
 		SpawnParameters.Owner = this;
 
 		ASTWWeaponBase* Weapon = GetWorld()->SpawnActor<ASTWWeaponBase>(WeaponClass, SpawnTM, SpawnParameters);
+		EquippedWeapon = Weapon;
 
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, FString::Printf(TEXT("Spawning: %s, By: %s"), *GetNameSafe(Weapon), *GetNameSafe(this)));
 	}
