@@ -5,9 +5,7 @@
 #include "Actions/STWAction_Shoot.h"
 
 #include "STWWeaponBase.h"
-#include "Kismet/GameplayStatics.h"
 #include "SantasToyWarfare/SantasToyWarfareCharacter.h"
-#include "SantasToyWarfare/TP_WeaponComponent.h"
 #include "SantasToyWarfare/Public/STWProjectileBase.h"
 
 
@@ -34,7 +32,7 @@ void USTWAction_Shoot::StartAction_Implementation(AActor* Instigator)
 
 			if(Weapon)
 			{
-				FirePointLocation = Weapon->GetWeaponComponent()->GetFireSocketLocation();
+				FirePointLocation = Weapon->GetFireSocketLocation();
 			}
 			else
 			{
@@ -54,25 +52,5 @@ void USTWAction_Shoot::StartAction_Implementation(AActor* Instigator)
 		}
 	}
 
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-
-	// Try and play a firing animation if specified
-	if (FirstPersonFireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FirstPersonFireAnimation, 1.f);
-		}
-	}
-
-	if (ensure(ThirdPersonFireAnimation))
-	{
-		Character->PlayAnimMontage(ThirdPersonFireAnimation);
-	}
+	
 }

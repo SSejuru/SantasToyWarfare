@@ -22,13 +22,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<ASTWProjectileBase> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	USoundBase* FireSound;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UAnimMontage* FirstPersonFireAnimation;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-	UAnimMontage* ThirdPersonFireAnimation;
 };

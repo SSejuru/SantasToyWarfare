@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class ASantasToyWarfareCharacter;
 
 UCLASS()
 class SANTASTOYWARFARE_API ASTWProjectileBase : public AActor
@@ -36,6 +37,10 @@ public:
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	ASantasToyWarfareCharacter* InstigatorCharacter;
 
 	/** Returns CollisionComp subobject **/
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }

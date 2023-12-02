@@ -10,9 +10,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "STWActionComponent.h"
+#include "STWAttributesComponent.h"
 #include "STWWeaponBase.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -43,6 +45,7 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	ActionComp = CreateDefaultSubobject<USTWActionComponent>("ActionComp");
+	AttributesComp = CreateDefaultSubobject<USTWAttributesComponent>("AttributesComp");
 
 	RunningSpeedMultiplier = 1.5f;
 	SetReplicates(true);
@@ -168,4 +171,9 @@ void ASantasToyWarfareCharacter::SpawnWeapon()
 	}
 }
 
+void ASantasToyWarfareCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(ASantasToyWarfareCharacter, EquippedWeapon);
+}

@@ -3,8 +3,10 @@
 
 #include "STWProjectileBase.h"
 
+#include "STWAttributesComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "SantasToyWarfare/SantasToyWarfareCharacter.h"
 
 ASTWProjectileBase::ASTWProjectileBase()
 {
@@ -38,12 +40,35 @@ ASTWProjectileBase::ASTWProjectileBase()
 	bReplicates = true;
 }
 
+void ASTWProjectileBase::BeginPlay()
+{
+	Super::BeginPlay();
 
+	ASantasToyWarfareCharacter* Character = Cast<ASantasToyWarfareCharacter>(GetInstigator());
+
+	if(Character)
+	{
+		InstigatorCharacter = Character;
+	}
+}
 
 void ASTWProjectileBase::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor && OtherActor != GetInstigator())
 	{
+		ASantasToyWarfareCharacter* Character = Cast<ASantasToyWarfareCharacter>(OtherActor);
+		if(Character)
+		{
+			if(Character->GetTeam() == InstigatorCharacter->GetTeam())
+			{
+				USTWAttributesComponent* AttributeComp = USTWAttributesComponent::GetAttributes(OtherActor);
+				if(AttributeComp)
+				{
+					AttributeComp->ApplyHealthChange(GetInstigator(), -InstigatorCharacter->GetEquippedWeapon()->GetBulletDamage());
+				}
+			}
+		}
+
 		Destroy();
 	}
 }
@@ -53,6 +78,8 @@ void ASTWProjectileBase::OnComponentHit(UPrimitiveComponent* HitComponent, AActo
 {
 	Destroy();
 }
+
+
 
 void ASTWProjectileBase::PostInitializeComponents()
 {

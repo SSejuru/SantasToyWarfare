@@ -59,6 +59,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float FireRate;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	float BulletDamage;
+
 	FTimerHandle TimerHandle_Fire;
 	
 
@@ -69,5 +72,6 @@ private:
 
 public:
 
+	float GetBulletDamage() const { return BulletDamage; }
 	FVector GetFireSocketLocation() const { return GetSocketLocation(FireSocketName); }
 };
