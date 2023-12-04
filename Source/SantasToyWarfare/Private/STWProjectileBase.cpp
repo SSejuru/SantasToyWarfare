@@ -46,7 +46,7 @@ void ASTWProjectileBase::BeginPlay()
 
 	ASantasToyWarfareCharacter* Character = Cast<ASantasToyWarfareCharacter>(GetInstigator());
 
-	if(Character)
+	if (Character)
 	{
 		InstigatorCharacter = Character;
 	}
@@ -54,18 +54,15 @@ void ASTWProjectileBase::BeginPlay()
 
 void ASTWProjectileBase::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor && OtherActor != GetInstigator())
+	if (OtherActor && OtherActor != GetInstigator())
 	{
 		ASantasToyWarfareCharacter* Character = Cast<ASantasToyWarfareCharacter>(OtherActor);
-		if(Character)
+		if (Character)
 		{
-			if(Character->GetTeam() == InstigatorCharacter->GetTeam())
+			USTWAttributesComponent* AttributeComp = USTWAttributesComponent::GetAttributes(OtherActor);
+			if (AttributeComp)
 			{
-				USTWAttributesComponent* AttributeComp = USTWAttributesComponent::GetAttributes(OtherActor);
-				if(AttributeComp)
-				{
-					AttributeComp->ApplyHealthChange(GetInstigator(), -InstigatorCharacter->GetEquippedWeapon()->GetBulletDamage());
-				}
+				AttributeComp->ApplyHealthChange(GetInstigator(), -InstigatorCharacter->GetEquippedWeapon()->GetBulletDamage());
 			}
 		}
 

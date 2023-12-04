@@ -4,9 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "STWGameModeBase.h"
 #include "STWWeaponBase.h"
-#include "TP_WeaponComponent.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "SantasToyWarfareCharacter.generated.h"
@@ -105,9 +103,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Actions")
 	FGameplayTag InteractTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
-	TEnumAsByte<EPlayerTeam> AssignedTeam;
-
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -136,8 +131,6 @@ public:
 	USTWActionComponent* GetActionComponent() const { return ActionComp; }
 
 	ASTWWeaponBase* GetEquippedWeapon() const { return EquippedWeapon; }
-
-	EPlayerTeam GetTeam() const { return AssignedTeam; }
 
 private:
 
