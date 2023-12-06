@@ -3,6 +3,7 @@
 
 #include "SantasToyWarfarePlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "SantasToyWarfareCharacter.h"
 
 void ASantasToyWarfarePlayerController::BeginPlay()
 {
@@ -15,5 +16,17 @@ void ASantasToyWarfarePlayerController::BeginPlay()
 		Subsystem->AddMappingContext(InputMappingContext, 0);
 
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
+	}
+}
+
+void ASantasToyWarfarePlayerController::AcknowledgePossession(APawn* P)
+{
+	Super::AcknowledgePossession(P);
+
+	ASantasToyWarfareCharacter* PlayerCharacter = Cast<ASantasToyWarfareCharacter>(P);
+
+	if(PlayerCharacter)
+	{
+		PlayerCharacter->OnCharacterPossesed();
 	}
 }

@@ -65,6 +65,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction;
 
+
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	bool bHasRifle;
@@ -79,7 +80,7 @@ public:
 
 protected:
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SpawnWeapon();
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
@@ -123,6 +124,9 @@ protected:
 	// End of APawn interface
 
 public:
+	UFUNCTION(BlueprintNativeEvent, Category = "Utility")
+	void OnCharacterPossesed();
+
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
@@ -132,10 +136,6 @@ public:
 
 	ASTWWeaponBase* GetEquippedWeapon() const { return EquippedWeapon; }
 
-private:
-
-	float WalkingSpeed;
-	float RunningSpeed;
 
 };
 

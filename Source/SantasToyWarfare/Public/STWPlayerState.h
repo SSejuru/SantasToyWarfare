@@ -6,6 +6,13 @@
 #include "GameFramework/PlayerState.h"
 #include "STWPlayerState.generated.h"
 
+UENUM(BlueprintType)
+enum EPlayerTeam : uint8
+{
+	ET_Blue  UMETA(DisplayName = "Blue Team"),
+	ET_Red  UMETA(DisplayName = "Red Team"),
+};
+
 /**
  * 
  */
@@ -13,5 +20,10 @@ UCLASS()
 class SANTASTOYWARFARE_API ASTWPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	UPROPERTY(BlueprintReadWrite, Category = "Gameplay")
+	TEnumAsByte<EPlayerTeam> AssignedTeam;
+
 };

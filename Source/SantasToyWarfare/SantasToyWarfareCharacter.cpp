@@ -47,7 +47,6 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 	ActionComp = CreateDefaultSubobject<USTWActionComponent>("ActionComp");
 	AttributesComp = CreateDefaultSubobject<USTWAttributesComponent>("AttributesComp");
 
-	RunningSpeedMultiplier = 1.5f;
 	SetReplicates(true);
 }
 
@@ -64,13 +63,6 @@ void ASantasToyWarfareCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	WalkingSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	RunningSpeed = WalkingSpeed * RunningSpeedMultiplier;
-
-	if(HasAuthority())
-		SpawnWeapon();
-	
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -100,6 +92,11 @@ void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ASantasToyWarfareCharacter::OnCharacterPossesed_Implementation()
+{
+	UE_LOG(LogTemp, Log, TEXT("On Character Possesed Called"));
 }
 
 

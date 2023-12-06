@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "STWWeaponBase.generated.h"
 
@@ -60,11 +61,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float BulletDamage;
 
-	FTimerHandle TimerHandle_Fire;
+	UPROPERTY(EditDefaultsOnly, Category = "Actions")
+	FGameplayTag ShootTag;
 
-	/** Make the weapon Fire a Projectile */
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void Fire();
+	FTimerHandle TimerHandle_Fire;
 
 	UFUNCTION()
 	void StopFireAction();
@@ -88,6 +88,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	/** Make the weapon Fire a Projectile */
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Fire();
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void AttachWeaponToOwner();

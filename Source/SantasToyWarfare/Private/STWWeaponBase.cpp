@@ -84,24 +84,25 @@ void ASTWWeaponBase::AttachWeaponToOwner()
 
 void ASTWWeaponBase::Fire()
 {
-	OwnerCharacter->GetActionComponent()->StartActionByTag(OwnerCharacter, FGameplayTag::RequestGameplayTag("Action.Shoot"));
-
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Fire, this, &ASTWWeaponBase::StopFireAction, FireRate);
-
-	if (OwnerCharacter->HasAuthority())
+	if(OwnerCharacter->GetActionComponent()->StartActionByTag(OwnerCharacter, ShootTag))
 	{
-		MulticastFireFeedback();
-	}
-	else
-	{
-		ServerFireFeedback();
-		PlayFireFeedback();
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_Fire, this, &ASTWWeaponBase::StopFireAction, FireRate);
+
+		if (OwnerCharacter->HasAuthority())
+		{
+			MulticastFireFeedback();
+		}
+		else
+		{
+			ServerFireFeedback();
+			PlayFireFeedback();
+		}
 	}
 }
 
 void ASTWWeaponBase::StopFireAction()
 {
-	OwnerCharacter->GetActionComponent()->StopActionByTag(OwnerCharacter, FGameplayTag::RequestGameplayTag("Action.Shoot"));
+	OwnerCharacter->GetActionComponent()->StopActionByTag(OwnerCharacter, ShootTag);
 }
 
 void ASTWWeaponBase::PlayFireFeedback()
