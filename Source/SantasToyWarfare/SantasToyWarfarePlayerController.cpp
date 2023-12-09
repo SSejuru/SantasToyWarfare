@@ -4,6 +4,9 @@
 #include "SantasToyWarfarePlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "SantasToyWarfareCharacter.h"
+#include "STWGameState.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 void ASantasToyWarfarePlayerController::BeginPlay()
 {
@@ -25,8 +28,27 @@ void ASantasToyWarfarePlayerController::AcknowledgePossession(APawn* P)
 
 	ASantasToyWarfareCharacter* PlayerCharacter = Cast<ASantasToyWarfareCharacter>(P);
 
-	if(PlayerCharacter)
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->OnCharacterPossesed();
 	}
+
+	PlayerHUD = CreateWidget<UUserWidget>(this, HUDWidget);
+
+	if (PlayerHUD)
+	{
+		PlayerHUD->AddToViewport();
+	}
+}
+
+EPlayerTeam ASantasToyWarfarePlayerController::GetPlayerTeam()
+{
+	ASTWGameState* GS = Cast<ASTWGameState>(UGameplayStatics::GetGameState(this));
+
+	if(GS)
+	{
+		return GS->GetPlayerTeam(this);
+	}
+
+	return EPlayerTeam();
 }

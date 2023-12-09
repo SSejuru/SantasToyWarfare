@@ -57,16 +57,16 @@ void ASTWProjectileBase::OnComponentOverlap(UPrimitiveComponent* OverlappedCompo
 	if (OtherActor && OtherActor != GetInstigator())
 	{
 		ASantasToyWarfareCharacter* Character = Cast<ASantasToyWarfareCharacter>(OtherActor);
-		if (Character)
+		if (Character->GetTeam() != InstigatorCharacter->GetTeam())
 		{
 			USTWAttributesComponent* AttributeComp = USTWAttributesComponent::GetAttributes(OtherActor);
 			if (AttributeComp)
 			{
 				AttributeComp->ApplyHealthChange(GetInstigator(), -InstigatorCharacter->GetEquippedWeapon()->GetBulletDamage());
 			}
-		}
 
-		Destroy();
+			Destroy();
+		}
 	}
 }
 

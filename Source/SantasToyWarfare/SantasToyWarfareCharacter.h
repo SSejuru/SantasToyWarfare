@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "STWPlayerState.h"
 #include "STWWeaponBase.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
@@ -64,7 +65,6 @@ public:
 	/** Sprint Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction;
-
 
 	/** Bool for AnimBP to switch to another animation set */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
@@ -136,7 +136,8 @@ public:
 
 	ASTWWeaponBase* GetEquippedWeapon() const { return EquippedWeapon; }
 
-
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EPlayerTeam GetTeam() const;
 };
 
 

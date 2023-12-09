@@ -15,9 +15,9 @@ USTWAttributesComponent::USTWAttributesComponent()
 }
 
 
-void USTWAttributesComponent::MultiCastHealthChange_Implementation(AActor* InstigatorActor, float Delta)
+void USTWAttributesComponent::MultiCastHealthChange_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
 {
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
 }
 
 bool USTWAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
@@ -34,7 +34,7 @@ bool USTWAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float D
 
 		if(ActualDelta != 0)
 		{
-			MultiCastHealthChange(InstigatorActor, ActualDelta);
+			MultiCastHealthChange(InstigatorActor, Health, ActualDelta);
 		}
 
 		if(ActualDelta < 0.0f && Health == 0)

@@ -36,7 +36,7 @@ protected:
 	FOnHealthChanged OnHealthChanged;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MultiCastHealthChange(AActor* InstigatorActor, float Delta);
+	void MultiCastHealthChange(AActor* InstigatorActor, float NewHealth,float Delta);
 
 public:	
 

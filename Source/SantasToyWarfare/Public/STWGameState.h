@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STWPlayerState.h"
 #include "GameFramework/GameState.h"
+#include "SantasToyWarfare/SantasToyWarfarePlayerController.h"
 #include "STWGameState.generated.h"
 
 /**
@@ -13,5 +15,10 @@ UCLASS()
 class SANTASTOYWARFARE_API ASTWGameState : public AGameState
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EPlayerTeam GetPlayerTeam(ASantasToyWarfarePlayerController* PlayerController);
+
 };

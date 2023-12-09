@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STWPlayerState.h"
 #include "GameFramework/PlayerController.h"
 #include "SantasToyWarfarePlayerController.generated.h"
 
@@ -25,9 +26,21 @@ protected:
 	// Begin Actor interface
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HUDWidget;
+
+	UPROPERTY()
+	UUserWidget* PlayerHUD;
+
 	virtual void BeginPlay() override;
 
 	virtual void AcknowledgePossession(APawn* P) override;
 
 	// End Actor interface
+
+public:
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	EPlayerTeam GetPlayerTeam();
+
 };

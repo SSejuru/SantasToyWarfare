@@ -3,3 +3,14 @@
 
 #include "STWGameState.h"
 
+EPlayerTeam ASTWGameState::GetPlayerTeam(ASantasToyWarfarePlayerController* PlayerController)
+{
+	ASTWPlayerState* PS =  Cast<ASTWPlayerState>(PlayerController->PlayerState);
+
+	if(PS)
+	{
+		return PS->AssignedTeam;
+	}
+
+	return EPlayerTeam();
+}

@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "SantasToyWarfarePlayerController.h"
 #include "STWActionComponent.h"
 #include "STWAttributesComponent.h"
 #include "STWWeaponBase.h"
@@ -92,6 +93,18 @@ void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* Play
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+EPlayerTeam ASantasToyWarfareCharacter::GetTeam() const
+{
+	ASantasToyWarfarePlayerController* PC = Cast<ASantasToyWarfarePlayerController>(GetController());
+
+	if (PC)
+	{
+		return PC->GetPlayerTeam();
+	}
+
+	return EPlayerTeam();
 }
 
 void ASantasToyWarfareCharacter::OnCharacterPossesed_Implementation()
