@@ -21,4 +21,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	EPlayerTeam GetPlayerTeam(ASantasToyWarfarePlayerController* PlayerController);
 
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerTeams", Replicated)
+	TArray<ASantasToyWarfarePlayerController*> BlueTeamPlayers;
+
+	UPROPERTY(BlueprintReadWrite, Category = "PlayerTeams", Replicated)
+	TArray<ASantasToyWarfarePlayerController*> RedTeamPlayers;
+
 };

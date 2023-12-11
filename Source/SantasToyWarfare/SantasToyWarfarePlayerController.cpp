@@ -43,11 +43,11 @@ void ASantasToyWarfarePlayerController::AcknowledgePossession(APawn* P)
 
 EPlayerTeam ASantasToyWarfarePlayerController::GetPlayerTeam()
 {
-	ASTWGameState* GS = Cast<ASTWGameState>(UGameplayStatics::GetGameState(this));
+	ASTWPlayerState* GS = GetPlayerState<ASTWPlayerState>();
 
 	if(GS)
 	{
-		return GS->GetPlayerTeam(this);
+		return GS->AssignedTeam;
 	}
 
 	return EPlayerTeam();

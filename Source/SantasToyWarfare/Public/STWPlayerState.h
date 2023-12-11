@@ -23,7 +23,7 @@ class SANTASTOYWARFARE_API ASTWPlayerState : public APlayerState
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, Category = "Gameplay")
+	UPROPERTY(BlueprintReadWrite, Category = "Gameplay", Replicated)
 	TEnumAsByte<EPlayerTeam> AssignedTeam;
 
 };

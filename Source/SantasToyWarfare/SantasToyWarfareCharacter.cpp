@@ -97,11 +97,11 @@ void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* Play
 
 EPlayerTeam ASantasToyWarfareCharacter::GetTeam() const
 {
-	ASantasToyWarfarePlayerController* PC = Cast<ASantasToyWarfarePlayerController>(GetController());
+	ASTWPlayerState* PS = GetPlayerState<ASTWPlayerState>();
 
-	if (PC)
+	if (PS)
 	{
-		return PC->GetPlayerTeam();
+		return PS->AssignedTeam;
 	}
 
 	return EPlayerTeam();
@@ -176,8 +176,6 @@ void ASantasToyWarfareCharacter::SpawnWeapon()
 
 		ASTWWeaponBase* Weapon = GetWorld()->SpawnActor<ASTWWeaponBase>(WeaponClass, SpawnTM, SpawnParameters);
 		EquippedWeapon = Weapon;
-
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, FString::Printf(TEXT("Spawning: %s, By: %s"), *GetNameSafe(Weapon), *GetNameSafe(this)));
 	}
 }
 
