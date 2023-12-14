@@ -86,7 +86,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	TSubclassOf<ASTWWeaponBase> WeaponClass;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	ASTWWeaponBase* EquippedWeapon;
 
 	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (ClampMin = 1, ClampMax = 2))

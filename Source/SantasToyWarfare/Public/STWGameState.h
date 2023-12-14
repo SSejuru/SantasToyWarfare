@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "STWPlayerState.h"
 #include "GameFramework/GameState.h"
+#include "SantasToyWarfare/SantasToyWarfareCharacter.h"
 #include "SantasToyWarfare/SantasToyWarfarePlayerController.h"
 #include "STWGameState.generated.h"
 
@@ -27,4 +28,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "PlayerTeams", Replicated)
 	TArray<ASantasToyWarfarePlayerController*> RedTeamPlayers;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Character Spawning")
+	void NotifyCharacterSpawned(ASantasToyWarfareCharacter* Character);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Character Spawning")
+	void NotifyCharacterDestroyed(ASantasToyWarfareCharacter* Character);
 };

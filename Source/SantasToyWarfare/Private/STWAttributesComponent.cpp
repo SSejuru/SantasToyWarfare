@@ -3,6 +3,7 @@
 
 #include "STWAttributesComponent.h"
 
+#include "STWGameMode.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -39,7 +40,11 @@ bool USTWAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float D
 
 		if(ActualDelta < 0.0f && Health == 0)
 		{
-			//Set up player death
+			ASTWGameMode* GM = GetWorld()->GetAuthGameMode<ASTWGameMode>();
+			if(GM)
+			{
+				GM->OnActorKilled(GetOwner(), InstigatorActor);
+			}
 		}
 	}
 
