@@ -26,4 +26,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Gameplay", Replicated)
 	TEnumAsByte<EPlayerTeam> AssignedTeam;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Gameplay", Replicated)
+	bool bIsCarryingGift;
 };

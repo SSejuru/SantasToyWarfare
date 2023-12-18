@@ -16,8 +16,10 @@ void USTWWorldUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 		return;
 	}
 
+	bool IsRendered = GetOwningPlayer()->LineOfSightTo(AttachedActor);
+	
 	FVector2D ScreenPosition;
-	bool bIsOnScreen = UGameplayStatics::ProjectWorldToScreen(GetOwningPlayer(), AttachedActor->GetActorLocation() + WorldOffset, ScreenPosition);
+	bool bIsOnScreen = IsRendered && UGameplayStatics::ProjectWorldToScreen(GetOwningPlayer(), AttachedActor->GetActorLocation() + WorldOffset, ScreenPosition) ;
 
 	if (bIsOnScreen)
 	{

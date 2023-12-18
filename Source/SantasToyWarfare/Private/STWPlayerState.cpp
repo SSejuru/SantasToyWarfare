@@ -10,4 +10,5 @@ void ASTWPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASTWPlayerState, AssignedTeam);
+	DOREPLIFETIME(ASTWPlayerState, bIsCarryingGift);
 }

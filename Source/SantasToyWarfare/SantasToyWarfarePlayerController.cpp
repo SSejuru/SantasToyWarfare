@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "SantasToyWarfareCharacter.h"
 #include "STWGameState.h"
+#include "STWMainHUDWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -33,11 +34,14 @@ void ASantasToyWarfarePlayerController::AcknowledgePossession(APawn* P)
 		PlayerCharacter->OnCharacterPossesed();
 	}
 
-	PlayerHUD = CreateWidget<UUserWidget>(this, HUDWidget);
-
-	if (PlayerHUD)
+	if(!PlayerHUD)
 	{
+		PlayerHUD = CreateWidget<USTWMainHUDWidget>(this, HUDWidget);
 		PlayerHUD->AddToViewport();
+	}
+	else
+	{
+		PlayerHUD->RestartWidget();
 	}
 }
 

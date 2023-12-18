@@ -5,6 +5,16 @@
 
 #include "Net/UnrealNetwork.h"
 
+void ASTWGameState::OnRep_BlueTeamScored()
+{
+	OnTeamScoreUpdate.Broadcast(ET_Blue, BlueTeamScore);
+}
+
+void ASTWGameState::OnRep_RedTeamScored()
+{
+	OnTeamScoreUpdate.Broadcast(ET_Red, RedTeamScore);
+}
+
 EPlayerTeam ASTWGameState::GetPlayerTeam(ASantasToyWarfarePlayerController* PlayerController)
 {
 	ASTWPlayerState* PS =  Cast<ASTWPlayerState>(PlayerController->PlayerState);
@@ -17,10 +27,26 @@ EPlayerTeam ASTWGameState::GetPlayerTeam(ASantasToyWarfarePlayerController* Play
 	return EPlayerTeam();
 }
 
+void ASTWGameState::IncreaseTeamScore(EPlayerTeam Team, int16 score)
+{
+	switch(Team)
+	{
+		case ET_Blue:
+			BlueTeamScore += score;
+			break;
+
+		case ET_Red:
+			RedTeamScore += score;
+			break;
+	}
+}
+
 void ASTWGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASTWGameState, BlueTeamPlayers);
 	DOREPLIFETIME(ASTWGameState, RedTeamPlayers);
+	DOREPLIFETIME(ASTWGameState, BlueTeamScore);
+	DOREPLIFETIME(ASTWGameState, RedTeamScore);
 }

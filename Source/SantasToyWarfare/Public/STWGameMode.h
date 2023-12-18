@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STWGiftCaptureSite.h"
 #include "STWPlayerStart.h"
 #include "GameFramework/GameMode.h"
 #include "SantasToyWarfare/SantasToyWarfareCharacter.h"
@@ -43,6 +44,8 @@ class SANTASTOYWARFARE_API ASTWGameMode : public AGameMode
 
 	ASTWGameMode();
 
+	virtual void BeginPlay() override;
+
 private:
 
 	bool bSpawnerDataSaved;
@@ -57,6 +60,10 @@ private:
 
 	FTransform GetPlayerSpawnTransform(ASantasToyWarfarePlayerController* Player);
 
+	TObjectPtr<ASTWGiftCaptureSite> BlueTeamCaptureSite;
+
+	TObjectPtr<ASTWGiftCaptureSite> RedTeamCaptureSite;
+	
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Spawn Data")
@@ -68,17 +75,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn Data")
 	TSubclassOf<ASantasToyWarfareCharacter> PlayerCharacter;
 
+	UPROPERTY(EditDefaultsOnly, Replicated, Category = "Spawn Data")
+	float RespawnTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	float PointsOnCapture;
+
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Player Spawning")
 	void SpawnPlayer(ASantasToyWarfarePlayerController* Player);
 
-	UPROPERTY(EditDefaultsOnly, Replicated, Category = "Spawn Data")
-	float RespawnTime;
-
 	UFUNCTION(BlueprintCallable)
 	void OnActorKilled(AActor* VictimActor, AActor* Killer);
 
-	UFUNCTION(BlueprintCallable)
-	void RespawnPlayerElapsed(AController* Controller);
+	UFUNCTION()
+	void CaptureGift(EPlayerTeam ScoringTeam);
 };

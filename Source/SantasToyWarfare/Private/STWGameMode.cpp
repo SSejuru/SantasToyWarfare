@@ -12,6 +12,29 @@
 ASTWGameMode::ASTWGameMode()
 {
 	RespawnTime = 5.0f;
+	PointsOnCapture = 1;
+}
+
+void ASTWGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	for (TActorIterator<ASTWGiftCaptureSite> It(GetWorld()); It; ++It)
+	{
+		ASTWGiftCaptureSite* GiftCaptureSite = *It;
+
+		switch (GiftCaptureSite->GetTeamOwner())
+		{
+			case ET_Blue:
+				BlueTeamCaptureSite = GiftCaptureSite;
+				break;
+			case ET_Red:
+				RedTeamCaptureSite = GiftCaptureSite;
+				break;
+			default:
+				continue;
+		}
+	}
 }
 
 void ASTWGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
@@ -23,11 +46,36 @@ void ASTWGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
 		AController* VictimController = Victim->GetController();
 		VictimController->UnPossess();
 
+		ASTWGameState* GS = GetGameState<ASTWGameState>();
+		if(GS)
+		{
+			GS->NotifyCharacterDestroyed(Victim);
+		}
+
 		FTimerHandle TimerHandle_RespawnDelay;
 		FTimerDelegate Delegate;
 		Delegate.BindUFunction(this, "RespawnPlayerElapsed", VictimController);
 
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnTime, false);
+	}
+}
+
+void ASTWGameMode::CaptureGift(EPlayerTeam ScoringTeam)
+{
+	ASTWGameState* GS = GetGameState<ASTWGameState>();
+	if (GS)
+	{
+		GS->IncreaseTeamScore(ScoringTeam, PointsOnCapture);
+	}
+
+	switch(ScoringTeam)
+	{
+		case ET_Blue:
+			RedTeamCaptureSite->RestockGift();
+			break;
+		case ET_Red:
+			BlueTeamCaptureSite->RestockGift();
+			break;
 	}
 }
 

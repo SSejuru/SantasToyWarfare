@@ -26,10 +26,10 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 {
 	// Character doesnt have a rifle at start
 	bHasRifle = false;
-	
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
-		
+
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
@@ -45,8 +45,15 @@ ASantasToyWarfareCharacter::ASantasToyWarfareCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	GiftMesh = CreateDefaultSubobject<UStaticMeshComponent>("Gift mesh");
+	GiftMesh->SetupAttachment(GetMesh(), "GiftSocket");
+	GiftMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GiftMesh->SetOwnerNoSee(true);
+
 	ActionComp = CreateDefaultSubobject<USTWActionComponent>("ActionComp");
 	AttributesComp = CreateDefaultSubobject<USTWAttributesComponent>("AttributesComp");
+
+	bIsGiftMeshVisible = false;
 
 	SetReplicates(true);
 }
@@ -55,6 +62,8 @@ void ASantasToyWarfareCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	GiftMesh->SetVisibility(false);
 
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -67,6 +76,7 @@ void ASantasToyWarfareCharacter::BeginPlay()
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
+
 
 
 void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -107,9 +117,15 @@ EPlayerTeam ASantasToyWarfareCharacter::GetTeam() const
 	return EPlayerTeam();
 }
 
-void ASantasToyWarfareCharacter::OnCharacterPossesed_Implementation()
+void ASantasToyWarfareCharacter::SetGiftVisibility(bool Visibility)
 {
-	UE_LOG(LogTemp, Log, TEXT("On Character Possesed Called"));
+	bIsGiftMeshVisible = Visibility;
+	OnRep_UpdateGiftVisibility();
+}
+
+void ASantasToyWarfareCharacter::OnRep_UpdateGiftVisibility()
+{
+	GiftMesh->SetVisibility(bIsGiftMeshVisible);
 }
 
 
@@ -184,4 +200,5 @@ void ASantasToyWarfareCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProp
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASantasToyWarfareCharacter, EquippedWeapon);
+	DOREPLIFETIME(ASantasToyWarfareCharacter, bIsGiftMeshVisible);
 }

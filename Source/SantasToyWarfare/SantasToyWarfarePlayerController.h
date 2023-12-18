@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SantasToyWarfarePlayerController.generated.h"
 
+class USTWMainHUDWidget;
 class UInputMappingContext;
 
 /**
@@ -30,7 +31,7 @@ protected:
 	TSubclassOf<UUserWidget> HUDWidget;
 
 	UPROPERTY()
-	UUserWidget* PlayerHUD;
+	USTWMainHUDWidget* PlayerHUD;
 
 	virtual void BeginPlay() override;
 

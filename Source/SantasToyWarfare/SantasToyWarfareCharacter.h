@@ -34,6 +34,9 @@ class ASantasToyWarfareCharacter : public ACharacter
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UStaticMeshComponent* GiftMesh;
+
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
@@ -118,13 +121,20 @@ protected:
 	// Called when sprint input is completed
 	void SprintStop();
 
+	UPROPERTY(ReplicatedUsing = "OnRep_UpdateGiftVisibility")
+	bool bIsGiftMeshVisible;
+
+	UFUNCTION()
+	void OnRep_UpdateGiftVisibility();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
 public:
-	UFUNCTION(BlueprintNativeEvent, Category = "Utility")
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Utility")
 	void OnCharacterPossesed();
 
 	/** Returns Mesh1P subobject **/
@@ -138,6 +148,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	EPlayerTeam GetTeam() const;
+
+	void SetGiftVisibility(bool Visibility);
 };
 
 
