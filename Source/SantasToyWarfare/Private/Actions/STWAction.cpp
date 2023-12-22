@@ -49,7 +49,7 @@ bool USTWAction::CanStart_Implementation(AActor* Instigator)
 
 	USTWActionComponent* Comp = GetOwningComponent();
 
-	if (Comp->ActiveGameplayTags.HasAny(BlockedTags))
+	if (Comp->ActiveGameplayTags.HasAny(BlockedTags) || !Comp->bCanUseActions)
 	{
 		return false;
 	}

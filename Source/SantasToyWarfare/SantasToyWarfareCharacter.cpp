@@ -12,6 +12,7 @@
 #include "SantasToyWarfarePlayerController.h"
 #include "STWActionComponent.h"
 #include "STWAttributesComponent.h"
+#include "STWGameState.h"
 #include "STWWeaponBase.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -73,6 +74,19 @@ void ASantasToyWarfareCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	ASTWGameState* GS = GetWorld()->GetGameState<ASTWGameState>();
+	if(GS)
+	{
+		GS->OnGameEnded.AddDynamic(this, &ASantasToyWarfareCharacter::OnGameEnded);
+	}
+}
+
+void ASantasToyWarfareCharacter::OnGameEnded(EPlayerTeam WinningTeam)
+{
+	ActionComp->bCanUseActions = false;
+	SetCanBeDamaged(false);
+	CustomTimeDilation = 0.5f;
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -127,6 +141,8 @@ void ASantasToyWarfareCharacter::OnRep_UpdateGiftVisibility()
 {
 	GiftMesh->SetVisibility(bIsGiftMeshVisible);
 }
+
+
 
 
 void ASantasToyWarfareCharacter::Move(const FInputActionValue& Value)

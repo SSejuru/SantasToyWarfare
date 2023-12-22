@@ -61,21 +61,34 @@ void ASTWGiftCaptureSite::OnSiteBeginOverlap(UPrimitiveComponent* OverlappedComp
 			if (PlayerState && PlayerState->bIsCarryingGift)
 			{
 				Server_CaptureGift(Character);
+				ASantasToyWarfarePlayerController* PC = Cast<ASantasToyWarfarePlayerController>(Character->GetController());
+				if(PC && PC->IsLocalPlayerController())
+				{
+					//PC->CaptureGift();
+				}
 			}
 		}
 	}
 }
 
-
 void ASTWGiftCaptureSite::Server_CaptureGift_Implementation(ASantasToyWarfareCharacter* CapturingCharacter)
 {
 	ASTWGameMode* GM = GetWorld()->GetAuthGameMode<ASTWGameMode>();
+
+	ASTWPlayerState* PS = CapturingCharacter->GetController()->GetPlayerState<ASTWPlayerState>();
+
+	if (PS)
+	{
+		PS->bIsCarryingGift = false;
+	}
+
 	if (GM)
 	{
 		GM->CaptureGift(TeamOwner.GetValue());
 		CapturingCharacter->SetGiftVisibility(false);
 	}
 }
+
 
 void ASTWGiftCaptureSite::OnGiftBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -94,6 +107,8 @@ void ASTWGiftCaptureSite::OnGiftBeginOverlap(UPrimitiveComponent* OverlappedComp
 		}
 	}
 }
+
+
 
 void ASTWGiftCaptureSite::UpdateGiftVisibility()
 {

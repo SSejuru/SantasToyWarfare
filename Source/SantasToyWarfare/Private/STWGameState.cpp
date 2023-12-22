@@ -27,18 +27,25 @@ EPlayerTeam ASTWGameState::GetPlayerTeam(ASantasToyWarfarePlayerController* Play
 	return EPlayerTeam();
 }
 
-void ASTWGameState::IncreaseTeamScore(EPlayerTeam Team, int16 score)
+void ASTWGameState::IncreaseTeamScore(EPlayerTeam Team, int64 score)
 {
 	switch(Team)
 	{
 		case ET_Blue:
 			BlueTeamScore += score;
+			OnRep_BlueTeamScored();
 			break;
 
 		case ET_Red:
 			RedTeamScore += score;
+			OnRep_RedTeamScored();
 			break;
 	}
+}
+
+void ASTWGameState::Multicast_EndGame_Implementation(EPlayerTeam WinningTeam)
+{
+	OnGameEnded.Broadcast(WinningTeam);
 }
 
 void ASTWGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -4,6 +4,7 @@
 #include "SantasToyWarfarePlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "SantasToyWarfareCharacter.h"
+#include "STWGameMode.h"
 #include "STWGameState.h"
 #include "STWMainHUDWidget.h"
 #include "Blueprint/UserWidget.h"
@@ -56,3 +57,4 @@ EPlayerTeam ASantasToyWarfarePlayerController::GetPlayerTeam()
 
 	return EPlayerTeam();
 }
+

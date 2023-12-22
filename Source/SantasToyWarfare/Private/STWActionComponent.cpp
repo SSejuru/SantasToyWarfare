@@ -10,6 +10,7 @@
 USTWActionComponent::USTWActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	bCanUseActions = true;
 
 	SetIsReplicatedByDefault(true);
 }

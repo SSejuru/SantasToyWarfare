@@ -48,6 +48,8 @@ class SANTASTOYWARFARE_API ASTWGameMode : public AGameMode
 
 private:
 
+	bool bCanScorePoints;
+
 	bool bSpawnerDataSaved;
 
 	bool IsPlayerSpawnAssigned(ASantasToyWarfarePlayerController* Player);
@@ -81,6 +83,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	float PointsOnCapture;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+	int64 PointsToWin;
+
 	UFUNCTION()
 	void RespawnPlayerElapsed(AController* Controller);
 
@@ -94,4 +99,5 @@ public:
 
 	UFUNCTION()
 	void CaptureGift(EPlayerTeam ScoringTeam);
+
 };

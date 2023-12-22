@@ -13,6 +13,8 @@ ASTWGameMode::ASTWGameMode()
 {
 	RespawnTime = 5.0f;
 	PointsOnCapture = 1;
+	PointsToWin = 4;
+	bCanScorePoints = true;
 }
 
 void ASTWGameMode::BeginPlay()
@@ -25,14 +27,14 @@ void ASTWGameMode::BeginPlay()
 
 		switch (GiftCaptureSite->GetTeamOwner())
 		{
-			case ET_Blue:
-				BlueTeamCaptureSite = GiftCaptureSite;
-				break;
-			case ET_Red:
-				RedTeamCaptureSite = GiftCaptureSite;
-				break;
-			default:
-				continue;
+		case ET_Blue:
+			BlueTeamCaptureSite = GiftCaptureSite;
+			break;
+		case ET_Red:
+			RedTeamCaptureSite = GiftCaptureSite;
+			break;
+		default:
+			continue;
 		}
 	}
 }
@@ -41,13 +43,13 @@ void ASTWGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
 {
 	ASantasToyWarfareCharacter* Victim = Cast<ASantasToyWarfareCharacter>(VictimActor);
 
-	if(Victim)
+	if (Victim)
 	{
 		AController* VictimController = Victim->GetController();
 		VictimController->UnPossess();
 
 		ASTWGameState* GS = GetGameState<ASTWGameState>();
-		if(GS)
+		if (GS)
 		{
 			GS->NotifyCharacterDestroyed(Victim);
 		}
@@ -62,20 +64,29 @@ void ASTWGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
 
 void ASTWGameMode::CaptureGift(EPlayerTeam ScoringTeam)
 {
-	ASTWGameState* GS = GetGameState<ASTWGameState>();
-	if (GS)
+	if (bCanScorePoints)
 	{
-		GS->IncreaseTeamScore(ScoringTeam, PointsOnCapture);
+		ASTWGameState* GS = GetGameState<ASTWGameState>();
+		if (GS)
+		{
+			GS->IncreaseTeamScore(ScoringTeam, PointsOnCapture);
+
+			if (GS->GetTeamScore(ScoringTeam) >= PointsToWin)
+			{
+				bCanScorePoints = false;
+				GS->Multicast_EndGame(ScoringTeam);
+			}
+		}
 	}
 
-	switch(ScoringTeam)
+	switch (ScoringTeam)
 	{
-		case ET_Blue:
-			RedTeamCaptureSite->RestockGift();
-			break;
-		case ET_Red:
-			BlueTeamCaptureSite->RestockGift();
-			break;
+	case ET_Blue:
+		RedTeamCaptureSite->RestockGift();
+		break;
+	case ET_Red:
+		BlueTeamCaptureSite->RestockGift();
+		break;
 	}
 }
 
@@ -83,7 +94,7 @@ void ASTWGameMode::RespawnPlayerElapsed(AController* Controller)
 {
 	ASantasToyWarfarePlayerController* PC = Cast<ASantasToyWarfarePlayerController>(Controller);
 
-	if(ensure(PC))
+	if (ensure(PC))
 	{
 		SpawnPlayer(PC);
 	}
@@ -102,13 +113,13 @@ void ASTWGameMode::SpawnPlayer(ASantasToyWarfarePlayerController* Player)
 
 	FTransform SpawnerTransform = GetPlayerSpawnTransform(Player);
 
-	if(ensureAlways(PlayerCharacter))
+	if (ensureAlways(PlayerCharacter))
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		ASantasToyWarfareCharacter* SpawnedCharacter = GetWorld()->SpawnActor<ASantasToyWarfareCharacter>(PlayerCharacter, SpawnerTransform, SpawnParams);
-		if(SpawnedCharacter)
+		if (SpawnedCharacter)
 		{
 			Player->Possess(SpawnedCharacter);
 		}
@@ -127,9 +138,9 @@ void ASTWGameMode::AssignPlayerToSpawner(ASantasToyWarfarePlayerController* Play
 	EPlayerTeam PlayerTeam = Player->GetPlayerTeam();
 	TArray<FPlayerSpawnerData> TeamSpawner = GetTeamSpawner(PlayerTeam);
 
-	for(int i = 0; i < TeamSpawner.Num(); i++)
+	for (int i = 0; i < TeamSpawner.Num(); i++)
 	{
-		if(TeamSpawner[i].PlayerController == nullptr)
+		if (TeamSpawner[i].PlayerController == nullptr)
 		{
 			TeamSpawner[i].PlayerController = Player;
 			break;
@@ -147,9 +158,9 @@ bool ASTWGameMode::IsPlayerSpawnAssigned(ASantasToyWarfarePlayerController* Play
 {
 	TArray<FPlayerSpawnerData> TeamSpawner = GetTeamSpawner(Player->GetPlayerTeam());
 
-	for(FPlayerSpawnerData Spawner : TeamSpawner)
+	for (FPlayerSpawnerData Spawner : TeamSpawner)
 	{
-		if(Spawner.PlayerController == Player)
+		if (Spawner.PlayerController == Player)
 		{
 			return true;
 		}
@@ -157,19 +168,19 @@ bool ASTWGameMode::IsPlayerSpawnAssigned(ASantasToyWarfarePlayerController* Play
 	return false;
 }
 
-TArray<FPlayerSpawnerData> ASTWGameMode::GetTeamSpawner(EPlayerTeam Team) 
+TArray<FPlayerSpawnerData> ASTWGameMode::GetTeamSpawner(EPlayerTeam Team)
 {
-	if(!bSpawnerDataSaved)
+	if (!bSpawnerDataSaved)
 		SaveTeamSpawners();
 
 	switch (Team)
 	{
-		case ET_Blue:
-			return BlueTeamSpawnersData;
-		case ET_Red: 
-			return RedTeamSpawnersData;
-		default:
-			return TArray<FPlayerSpawnerData>();
+	case ET_Blue:
+		return BlueTeamSpawnersData;
+	case ET_Red:
+		return RedTeamSpawnersData;
+	default:
+		return TArray<FPlayerSpawnerData>();
 	}
 
 }
@@ -200,7 +211,7 @@ FTransform ASTWGameMode::GetPlayerSpawnTransform(ASantasToyWarfarePlayerControll
 
 	for (FPlayerSpawnerData Spawner : TeamSpawner)
 	{
-		if(Spawner.PlayerController == Player)
+		if (Spawner.PlayerController == Player)
 		{
 			return Spawner.PlayerStart->GetActorTransform();
 		}

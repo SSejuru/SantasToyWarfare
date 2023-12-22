@@ -63,6 +63,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnActionStateChanged OnActionStopped;
 
+	bool bCanUseActions;
 
 	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 

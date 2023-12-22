@@ -43,5 +43,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	EPlayerTeam GetPlayerTeam();
-
 };

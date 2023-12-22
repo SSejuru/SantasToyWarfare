@@ -127,6 +127,9 @@ protected:
 	UFUNCTION()
 	void OnRep_UpdateGiftVisibility();
 
+	UFUNCTION()
+	void OnGameEnded(EPlayerTeam WinningTeam);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
