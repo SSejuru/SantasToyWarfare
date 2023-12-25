@@ -59,6 +59,8 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 public:
 
 	/** Look Input Action */
@@ -80,6 +82,8 @@ public:
 	/** Getter for the bool */
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
+
+	virtual FVector GetPawnViewLocation() const override;
 
 protected:
 

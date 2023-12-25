@@ -82,6 +82,22 @@ void ASantasToyWarfareCharacter::BeginPlay()
 	}
 }
 
+void ASantasToyWarfareCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->SetLifeSpan(0.1f);
+	}
+
+	ASTWGameState* GS = GetWorld()->GetGameState<ASTWGameState>();
+	if (GS)
+	{
+		GS->NotifyCharacterDestroyed(this);
+	}
+}
+
 void ASantasToyWarfareCharacter::OnGameEnded(EPlayerTeam WinningTeam)
 {
 	ActionComp->bCanUseActions = false;
@@ -194,6 +210,11 @@ void ASantasToyWarfareCharacter::SetHasRifle(bool bNewHasRifle)
 bool ASantasToyWarfareCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+FVector ASantasToyWarfareCharacter::GetPawnViewLocation() const
+{
+	return FirstPersonCameraComponent->GetComponentLocation();
 }
 
 void ASantasToyWarfareCharacter::SpawnWeapon()

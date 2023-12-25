@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputAction.h"
 #include "STWPlayerState.h"
 #include "GameFramework/PlayerController.h"
 #include "SantasToyWarfarePlayerController.generated.h"
@@ -24,6 +25,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* InputMappingContext;
 
+	UPROPERTY(EditDefaultsOnly, Category= Input)
+	UInputAction* PauseAction;
+
+	UFUNCTION(BlueprintCallable)
+	void TogglePauseMenu();
+
 	// Begin Actor interface
 protected:
 
@@ -33,9 +40,17 @@ protected:
 	UPROPERTY()
 	USTWMainHUDWidget* PlayerHUD;
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> PauseMenuClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PauseMenuInstance;
+
 	virtual void BeginPlay() override;
 
 	virtual void AcknowledgePossession(APawn* P) override;
+
+	virtual void SetupInputComponent() override;
 
 	// End Actor interface
 

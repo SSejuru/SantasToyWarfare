@@ -4,11 +4,12 @@
 #include "SantasToyWarfarePlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "SantasToyWarfareCharacter.h"
-#include "STWGameMode.h"
-#include "STWGameState.h"
 #include "STWMainHUDWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include <EnhancedInputComponent.h>
+
+
 
 void ASantasToyWarfarePlayerController::BeginPlay()
 {
@@ -21,6 +22,16 @@ void ASantasToyWarfarePlayerController::BeginPlay()
 		Subsystem->AddMappingContext(InputMappingContext, 0);
 
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
+	}
+}
+
+void ASantasToyWarfarePlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &ASantasToyWarfarePlayerController::TogglePauseMenu);
 	}
 }
 
@@ -43,6 +54,29 @@ void ASantasToyWarfarePlayerController::AcknowledgePossession(APawn* P)
 	else
 	{
 		PlayerHUD->RestartWidget();
+	}
+}
+
+void ASantasToyWarfarePlayerController::TogglePauseMenu()
+{
+	if (PauseMenuInstance && PauseMenuInstance->IsInViewport())
+	{
+		PauseMenuInstance->RemoveFromParent();
+		PauseMenuInstance = nullptr;
+
+		bShowMouseCursor = false;
+		SetInputMode(FInputModeGameOnly());
+
+		return;
+	}
+
+	PauseMenuInstance = CreateWidget<UUserWidget>(this, PauseMenuClass);
+	if (PauseMenuInstance)
+	{
+		PauseMenuInstance->AddToViewport(100);
+
+		bShowMouseCursor = true;
+		SetInputMode(FInputModeUIOnly());
 	}
 }
 
