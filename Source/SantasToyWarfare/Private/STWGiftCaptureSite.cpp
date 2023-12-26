@@ -4,6 +4,7 @@
 #include "STWGiftCaptureSite.h"
 
 #include "STWGameMode.h"
+#include "STWGameplayFunctionLibrary.h"
 #include "STWGameState.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
@@ -61,11 +62,6 @@ void ASTWGiftCaptureSite::OnSiteBeginOverlap(UPrimitiveComponent* OverlappedComp
 			if (PlayerState && PlayerState->bIsCarryingGift)
 			{
 				Server_CaptureGift(Character);
-				ASantasToyWarfarePlayerController* PC = Cast<ASantasToyWarfarePlayerController>(Character->GetController());
-				if(PC && PC->IsLocalPlayerController())
-				{
-					//PC->CaptureGift();
-				}
 			}
 		}
 	}
@@ -131,6 +127,12 @@ void ASTWGiftCaptureSite::Server_PickUpGift_Implementation(ASantasToyWarfareChar
 		PlayerState->bIsCarryingGift = true;
 		bHasGift = false;
 		UpdateGiftVisibility();
+
+		ASTWGameState* GS = GetWorld()->GetGameState<ASTWGameState>();
+		if(GS)
+		{
+			GS->Multicast_BroadcastGameEvent(EM_GiftStolen, PlayerState->AssignedTeam.GetValue(), 2.5f);
+		}
 	}
 }
 

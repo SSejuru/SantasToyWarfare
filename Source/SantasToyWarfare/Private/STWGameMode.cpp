@@ -4,6 +4,7 @@
 #include "STWGameMode.h"
 
 #include "EngineUtils.h"
+#include "STWGameplayFunctionLibrary.h"
 #include "STWGameState.h"
 #include "Net/UnrealNetwork.h"
 #include "SantasToyWarfare/SantasToyWarfareCharacter.h"
@@ -46,9 +47,39 @@ void ASTWGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
 	if (Victim)
 	{
 		AController* VictimController = Victim->GetController();
+		ASTWGameState* GS = GetGameState<ASTWGameState>();
+
+
+		//Check if victim was carrying gift, and restock it to christmas tree (Change in the future to drop the gift to the ground)
+		ASTWPlayerState* VictimPlayerState = VictimController->GetPlayerState<ASTWPlayerState>();
+		if (VictimPlayerState && VictimPlayerState->bIsCarryingGift)
+		{
+			VictimPlayerState->bIsCarryingGift = false;
+
+			EPlayerTeam VictimTeam = VictimPlayerState->AssignedTeam.GetValue();
+			EPlayerTeam MessageTeam = ET_Blue;
+
+			switch (VictimTeam)
+			{
+			case ET_Blue:
+				RedTeamCaptureSite->RestockGift();
+				MessageTeam = ET_Red;
+				break;
+			case ET_Red:
+				BlueTeamCaptureSite->RestockGift();
+				MessageTeam = ET_Blue;
+				break;
+			}
+
+			if (GS)
+			{
+				GS->Multicast_BroadcastGameEvent(EM_GiftReturned, MessageTeam, 2.5f);
+			}
+		}
+
+		//Unpossess character and consider it destroyed
 		VictimController->UnPossess();
 
-		ASTWGameState* GS = GetGameState<ASTWGameState>();
 		if (GS)
 		{
 			GS->NotifyCharacterDestroyed(Victim);
@@ -71,10 +102,14 @@ void ASTWGameMode::CaptureGift(EPlayerTeam ScoringTeam)
 		{
 			GS->IncreaseTeamScore(ScoringTeam, PointsOnCapture);
 
+
 			if (GS->GetTeamScore(ScoringTeam) >= PointsToWin)
 			{
 				bCanScorePoints = false;
 				GS->Multicast_EndGame(ScoringTeam);
+			}else
+			{
+				GS->Multicast_BroadcastGameEvent(EM_GiftCaptured, ScoringTeam, 2.5f);
 			}
 		}
 	}

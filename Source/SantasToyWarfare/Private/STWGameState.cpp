@@ -43,6 +43,11 @@ void ASTWGameState::IncreaseTeamScore(EPlayerTeam Team, int64 score)
 	}
 }
 
+void ASTWGameState::Multicast_BroadcastGameEvent_Implementation(EMessageType Message, EPlayerTeam AssociatedTeam, float Duration)
+{
+	OnGameEventMessage.Broadcast(Message, AssociatedTeam, Duration);
+}
+
 void ASTWGameState::Multicast_EndGame_Implementation(EPlayerTeam WinningTeam)
 {
 	OnGameEnded.Broadcast(WinningTeam);

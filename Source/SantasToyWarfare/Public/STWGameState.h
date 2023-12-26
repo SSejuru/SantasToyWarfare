@@ -9,8 +9,19 @@
 #include "SantasToyWarfare/SantasToyWarfarePlayerController.h"
 #include "STWGameState.generated.h"
 
+UENUM(BlueprintType)
+enum EMessageType : uint8
+{
+	EM_GiftCaptured  UMETA(DisplayName = "Gift Captured"),
+	EM_GiftReturned  UMETA(DisplayName = "Gift Returned"),
+	EM_GiftStolen UMETA(DisplayName = "Gift Stolen")
+};
+
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTeamScoreUpdate, EPlayerTeam, TeamScoring, int64, NewTeamScore);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameEnded, EPlayerTeam, WinningTeam);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnGameEventMessage, EMessageType, MessageType, EPlayerTeam, AssociatedTeam, float, MessageDuration);
+
 
 /**
  * 
@@ -51,6 +62,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameEnded OnGameEnded;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnGameEventMessage OnGameEventMessage;
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "Character Spawning")
 	void NotifyCharacterSpawned(ASantasToyWarfareCharacter* Character);
 
@@ -64,4 +78,7 @@ public:
 	void Multicast_EndGame(EPlayerTeam WinningTeam);
 
 	int64 GetTeamScore(EPlayerTeam Team) const { return Team == ET_Blue ? BlueTeamScore : RedTeamScore; };
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_BroadcastGameEvent(EMessageType Message, EPlayerTeam AssociatedTeam, float Duration);
 };

@@ -90,12 +90,6 @@ void ASantasToyWarfareCharacter::EndPlay(const EEndPlayReason::Type EndPlayReaso
 	{
 		EquippedWeapon->SetLifeSpan(0.1f);
 	}
-
-	ASTWGameState* GS = GetWorld()->GetGameState<ASTWGameState>();
-	if (GS)
-	{
-		GS->NotifyCharacterDestroyed(this);
-	}
 }
 
 void ASantasToyWarfareCharacter::OnGameEnded(EPlayerTeam WinningTeam)
@@ -126,7 +120,7 @@ void ASantasToyWarfareCharacter::SetupPlayerInputComponent(UInputComponent* Play
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASantasToyWarfareCharacter::Look);
 
 		//Sprinting
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASantasToyWarfareCharacter::SprintStart);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ASantasToyWarfareCharacter::SprintStart);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASantasToyWarfareCharacter::SprintStop);
 	}
 	else
