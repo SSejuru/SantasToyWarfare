@@ -18,7 +18,7 @@ Each match consists of a 2v2 snowball fight following the rules of a normal "Cap
   - Team spawning system (Players are divided into teams and are assigned to their own spawn points)
   - Points awarded to teams when capturing a gift
   - Winning and losing conditions
-
+  - 
 UMG
 - Main menu to host/join game
 - UI elements for player attributes and projected widgets for allies and enemies health.
