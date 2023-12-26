@@ -1,4 +1,4 @@
-![GameTitle](https://github.com/SSejuru/SantasToyWarfare/assets/97358860/9281d848-27fc-426c-8118-3e2dd5d9c625)
+![GameTitleSmall](https://github.com/SSejuru/SantasToyWarfare/assets/97358860/0e75e9a7-04ab-441f-a02f-956770e47d45)
 
 Santa's Toy Warfare is a Multiplayer Christmas FPS where you play with your friends in a snowball fight to get all the toys in the neighborhood!
 
