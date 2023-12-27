@@ -82,11 +82,11 @@ void ASantasToyWarfarePlayerController::TogglePauseMenu()
 
 EPlayerTeam ASantasToyWarfarePlayerController::GetPlayerTeam()
 {
-	ASTWPlayerState* GS = GetPlayerState<ASTWPlayerState>();
+	ASTWPlayerState* PS = Cast<ASTWPlayerState>(PlayerState);
 
-	if(GS)
+	if(PS)
 	{
-		return GS->AssignedTeam;
+		return PS->AssignedTeam.GetValue();
 	}
 
 	return EPlayerTeam();

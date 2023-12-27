@@ -230,8 +230,10 @@ void ASTWGameMode::SaveTeamSpawners()
 		{
 		case ET_Blue:
 			BlueTeamSpawnersData.Add(FPlayerSpawnerData(Spawner, nullptr));
+			break;
 		case ET_Red:
 			RedTeamSpawnersData.Add(FPlayerSpawnerData(Spawner, nullptr));
+			break;
 		default:
 			continue;
 		}

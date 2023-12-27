@@ -17,7 +17,7 @@ class SANTASTOYWARFARE_API ASTWPlayerStart : public APlayerStart
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EPlayerTeam> AssignedTeam;
 	
 };
