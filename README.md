@@ -4,6 +4,8 @@ Santa's Toy Warfare is a Multiplayer Christmas FPS where you play with your frie
 
 Each match consists of a 2v2 snowball fight following the rules of a normal "Capture the flag" gamemode, where players must run to the enemy spawn point, capture the gift under the christmas tree, and take it to the team's christmas tree to secure a point! The first team in collecting 4 enemy gifts wins the game.
 
+[Small Gameplay Preview Video](https://youtu.be/geAbPdNBXkk) 
+
 # Project Features
 - First Person Character Movement
 - **Action System** (similar to Gameplay Ability System in design)
